@@ -41,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     #여기서부터 추가
     'accounts',
+    'folders',
+    'locations',
     'corsheaders',# CORS 추가
 
     # DRF
