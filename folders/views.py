@@ -10,7 +10,7 @@ import json
 @login_required     # 로그인 상태 확인
 def get_folders(request):
     # 모든 폴더 객체 가져옴, 업데이트 날짜 순 조회
-    folders = Folder.objects.all()
+    folders = request.user.folder_set.all()
 
     # 각 폴더에 대한 정보 JSON 형태로 반환
     folder_list = []
@@ -22,7 +22,7 @@ def get_folders(request):
         }
         folder_list.append(folder_info)
 
-    return JsonResponse(folder_info, safe=False)
+    return JsonResponse(folder_list, safe=False)
 
 
 @csrf_exempt  # CSRF 보호 비활성화 (테스트 용도)
@@ -33,7 +33,7 @@ def create_folder(request):
             data = json.loads(request.body)
             name = data.get('name', '')
             if name:
-                folder = Folder.create_folder(name)
+                folder = Folder.create_folder(name, user=request.user)
                 return JsonResponse({'message': '폴더가 생성되었습니다.', 'folder_id': folder.id})
             else:
                 return JsonResponse({'message': '폴더 이름을 제공해야 합니다.'}, status=400)
