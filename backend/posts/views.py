@@ -31,17 +31,19 @@ class PostListView(View):
 
 
     def post(self, request):
-        author = request.session.get('user_id')
-        title = request.POST['title']
-        content = request.POST['content']
-        img = request.FILES['image']
-        post = Post(
-            author_id= author,
-            title = title,
-            content = content,
-            image = img ,
-        )
-        post.save()
+        user_id = request.session.get('user_id')
+        if user_id:
+            author = request.session.get('user_id')
+            title = request.POST['title']
+            content = request.POST['content']
+            img =   request.FILES.get('image')
+            post = Post(
+                author_id= author,
+                title = title,
+                content = content,
+                image = img ,
+            )
+            post.save()
         return JsonResponse({"message": "저장되었습니다."}, status=200)
 
 

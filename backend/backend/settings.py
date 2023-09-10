@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'accounts',
     'corsheaders',# CORS 추가
     'posts',
-
+    'place',
     # DRF
     'rest_framework',
     'rest_framework_simplejwt',
