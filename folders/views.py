@@ -50,15 +50,20 @@ def add_location_to_folder(request):    # 폴더에 장소 저장
         try:
             data = json.loads(request.body)
             folder_id = data.get('folder_id')
-            location_name = data.get('location_name')
+            location_data_from_kakao = {'id': data.get('location_id'), 'name': data.get('place_name'), 'road_address_name': data.get('road_address_name')}
 
-            if folder_id and location_name:
+            if folder_id and location_data_from_kakao['id']:
                 folder = get_object_or_404(Folder, pk=folder_id)    # get_object_or_404를 통해 존재하지 않는 객체 처리
-                location = get_object_or_404(Location, name=location_name)
+                # get_or_create는 주어진 인자에 맞는 객체가 없으면 생성한다.
+                location, created = Location.objects.get_or_create(id=location_data_from_kakao['id'], defaults={
+                    # 장고에선 기본적으로 자동 증가하는 id를 자동 할당하지만,외부 시스템(카카오API)에서 제공되는 ID를 이용할 것이므로 작성해줌
+                    'id': location_data_from_kakao['id'],
+                    'name': location_data_from_kakao['name'],
+                    'road_address_name': location_data_from_kakao['road_address_name']})
                 folder.locations.add(location)
                 return JsonResponse({'message': '장소가 폴더에 추가되었습니다.'})
             else:
-                return JsonResponse({'message': '폴더 ID와 장소 이름을 제공해야 합니다.'}, status=400)
+                return JsonResponse({'message': '폴더 ID와 장소 id를 제공해야 합니다.'}, status=400)
         except Exception as e:
             return JsonResponse({'message': str(e)}, status=500)
     else:
@@ -67,10 +72,6 @@ def add_location_to_folder(request):    # 폴더에 장소 저장
 
 @login_required     # 로그인 상태 확인
 def folder_locations(request, folder_id):   # 특정 폴더 내 장소 목록 조회
-    folder = get_object_or_404(Folder, id=folder_id)
-    location_names = list(folder.locations.values_list('name', flat=True))
-    response_data = {
-        'folder_name': folder.name,
-        'location_names': location_names,
-    }
-    return JsonResponse(response_data)
+    folder = get_object_or_404(Folder, pk=folder_id)
+    locations = folder.loactions.values('id', 'name', 'road_address_name')  # 상세 정보 포함
+    return JsonResponse({'locations': list(locations)})
