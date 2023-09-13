@@ -25,7 +25,7 @@ def get_folders(request):
     return JsonResponse(folder_list, safe=False)
 
 
-@csrf_exempt  # CSRF 보호 비활성화 (테스트 용도)
+# @csrf_exempt  # CSRF 보호 비활성화 (테스트 용도)
 @login_required     # 로그인 상태 확인
 def create_folder(request):
     if request.method == 'POST':
@@ -43,7 +43,7 @@ def create_folder(request):
         return JsonResponse({'message': 'POST 요청을 사용하세요.'}, status=400)
 
 
-@csrf_exempt  # 임시로 CSRF 보호 비활성화 (테스트 용도)
+# @csrf_exempt  # 임시로 CSRF 보호 비활성화 (테스트 용도)
 @login_required     # 로그인 상태 확인
 def add_location_to_folder(request):    # 폴더에 장소 저장
     if request.method == 'POST':
