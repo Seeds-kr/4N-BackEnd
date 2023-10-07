@@ -6,7 +6,7 @@ class Places(models.Model):
     address = models.CharField(max_length=255)
     phone = models.CharField(max_length=20)
     latitude = models.FloatField()
-    longitude = models.FloatField()
+    longtitude = models.FloatField()
 
     def __str__(self):
-         return f"Name: {self.name}, Address: {self.address}, Phone: {self.phone}, Latitude: {self.latitude}, Longitude: {self.longitude}"
+         return f"Name: {self.name}, Address: {self.address}, Phone: {self.phone}, Latitude: {self.latitude}, longtitude: {self.longtitude}"
