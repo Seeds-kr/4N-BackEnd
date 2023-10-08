@@ -71,7 +71,7 @@ def login(request):
                     request.session['user_id'] = user.id  # 변경: 'user_id'로 세션에 저장
                     print(user.id)
                     request.session.save()
-                    return JsonResponse({"message": '로그인 했습니다. '}, status=200)
+                    return JsonResponse({"message": '로그인 했습니다. ',"user_id": user.id}, status=200)
                 else:
                     return JsonResponse({"message": '비밀번호가 틀립니다.'}, status=400)
             except User.DoesNotExist:

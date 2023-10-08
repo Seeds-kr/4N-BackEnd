@@ -18,6 +18,7 @@ class FoldersView(View):
         
         title = data.get('title')
         user_id = request.session.get("user_id")
+        print(user_id)
         places_data = data.get('places', [])
 
         if not title:
@@ -25,7 +26,7 @@ class FoldersView(View):
 
         folder = Folder.objects.create(
             title=title,
-            user_id='1'  # user_id로 나중에 대체.
+            user_id=user_id  # user_id로 나중에 대체.
         )
 
         for i, place_data in enumerate(places_data):
