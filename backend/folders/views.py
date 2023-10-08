@@ -21,7 +21,7 @@ class FoldersView(View):
         print(user_id)
         places_data = data.get('places', [])
 
-        if not title:
+        if not title or not user_id:
             return JsonResponse({'message' : "로그인 및 제목을 입력해주세요."},status=400)
 
         folder = Folder.objects.create(
@@ -54,7 +54,7 @@ class FoldersView(View):
     
 @method_decorator(csrf_exempt, name='dispatch')
 class FolderUpdateView(View):
-    def post(self, request):  
+    def post(self, request, folder_id):  
         data = json.loads(request.body)
         folder_id = data.get('folder_id')
 
@@ -77,7 +77,7 @@ class FolderUpdateView(View):
 
         return JsonResponse({'message': '폴더가 성공적으로 업데이트되었습니다.'}, status=200)
     
-    def delete(self, request):  
+    def delete(self, request,folder_id):  
         data = json.loads(request.body)
         folder_id = data.get('folder_id')
         print(folder_id)
