@@ -80,7 +80,22 @@ class FolderUpdateView(View):
             return JsonResponse({'message': '폴더가 성공적으로 업데이트되었습니다.'}, status=200)
         else:
              return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
-     
+
+    def put(self, request, folder_id):  # 폴더 title 수정
+        user_id = request.session.get('user_id')
+        folder = get_object_or_404(Folder, pk=folder_id)
+        if user_id and folder.owner.id == user_id:  # 폴더 소유자 확인
+            data = json.loads(request.body)
+            new_title = data.get('title', folder.title)  # 새 제목이 입력되지 않으면 기존 제목 유지
+
+            folder.title = new_title  # 제목 수정
+            folder.save()
+
+            return JsonResponse({'message': '폴더가 성공적으로 수정되었습니다.'}, status=200)
+
+        else:
+            return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
+
     
     def delete(self, request,folder_id): 
         user_id = request.session.get('user_id') 
