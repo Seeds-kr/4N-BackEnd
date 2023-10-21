@@ -96,8 +96,7 @@ class FolderUpdateView(View):
         else:
             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
-    
-    def delete(self, request,folder_id): 
+    def delete(self, request,folder_id):
         user_id = request.session.get('user_id') 
         folder = get_object_or_404(Folder, pk=folder_id)
         if user_id:

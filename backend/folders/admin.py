@@ -16,3 +16,8 @@ from .models import Folder
 
 
 # admin.site.register(Folder, FolderAdmin)
+
+class FolderAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title', 'user', 'created', 'updated')
+
+admin.site.register(Folder, FolderAdmin)
