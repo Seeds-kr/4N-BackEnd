@@ -25,7 +25,7 @@ class FoldersView(View):
 
         folder = Folder.objects.create(
             title=title,
-            user_id=user_id  # user_id로 나중에 대체.
+            user_id="17"  # user_id로 나중에 대체.
         )
 
         for i, place_data in enumerate(places_data):

@@ -84,21 +84,22 @@ def logout(request):
         
         del request.session['user_id']
         return JsonResponse({"message":"로그아웃이 되었습니다."},status=200)
-    
+
+@method_decorator(csrf_exempt, name= 'dispatch')
 def findpassword(request):
     if request.method == "POST":
         params = json.loads(request.body)
-        username = params.get('username')
-        password = User.objects.get(username=username).password
+        useremail = params.get('useremail')
+        password = User.objects.get(useremail=useremail).password
         return JsonResponse({"message" : "비밀번호를 찾았습니다.", "password": password},status=200)
     
-
+@method_decorator(csrf_exempt, name= 'dispatch')
 def changepassword(request):
     if request.method == "POST":
         params = json.loads(request.body)
-        username = params.get("username")
+        useremail = params.get("useremail")
         password = params.get("password")
-        user = User.objects.get(username = username)
+        user = User.objects.get(useremail = useremail)
 
         if check_password(password, user.password): #지금 내 패스워드가 맞는지 확인
             new_password = params.get('new_password')
@@ -116,13 +117,13 @@ def changepassword(request):
         else:
             return JsonResponse({"message": "현재 비밀번호가 틀립니다."} ,status=400)
 
-
+@method_decorator(csrf_exempt, name= 'dispatch')
 def findid(request):
     if request.method == "POST":
         params = json.loads(request.body)
-        useremail = params.get('useremail') 
-        username = User.objects.get(useremail=useremail).username
-        return JsonResponse({"message" : "유저아이디를 찾았습니다.", "username": username},status=200)
+        username = params.get('username') 
+        useremail = User.objects.get(username=username).useremail
+        return JsonResponse({"message" : "유저아이디를 찾았습니다.", "useremail": useremail},status=200)
     
 @method_decorator(csrf_exempt, name= 'dispatch')
 def delete(request):
@@ -167,7 +168,7 @@ class KakaoLoginView(APIView):
             access_token =  token.get('access_token') # 받은 access token
             request.session['kakao_access_token'] = access_token
             # kakao에 user info 요청
-            headers = {"Authorization": f"Bearer ${access_token}"}
+            headers = {"Authorization": f"Bearer {access_token}"}
             user_infomation = requests.get(KAKAO_USER_API, headers=headers).json() # 받은 access token 으로 user 정보 요청
             data = {'access_token': access_token, 'code': code}
             kakao_account = user_infomation.get('kakao_account')
@@ -180,7 +181,7 @@ class KakaoLoginView(APIView):
                     user = kakao_users.first()
                     kakao_name = kakao_account['profile']['nickname']
                     request.session['kakao_user'] = user.id
-                    return Response({"message":"가입된 회원입니다."},status=200)
+                    return redirect('http://localhost:3000/',status=200) 
                 else:
                     #간편회원가입
                     user = User.objects.create(
@@ -189,7 +190,7 @@ class KakaoLoginView(APIView):
                     )
                     user.save()
                     request.session['kakao_user'] = user.id
-                    return Response({"message":"간편회원가입이 완료되었습니다."},status=200)
+                    return redirect('http://localhost:3000/',status=200) 
             
             except User.DoesNotExist:
                 #일반회원가입
