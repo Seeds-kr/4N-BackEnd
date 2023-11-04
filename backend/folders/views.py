@@ -25,7 +25,6 @@ class FoldersView(View):
             if not title or not user_id :
                 return JsonResponse({'message' : "로그인 및 제목을 입력해주세요."},status=400)
 
-<<<<<<< HEAD
         folder = Folder.objects.create(
             title=title,
             user_id="17"  # user_id로 나중에 대체.
@@ -47,11 +46,6 @@ class FoldersView(View):
                 phone=phone,  # 제공되지 않을 경우 빈 칸으로 입력됨.
                 latitude=float(latitude),
                 longitude=float(longitude)
-=======
-            folder = Folder.objects.create(
-                title=title,
-                user_id=user_id  # user_id로 나중에 대체.
->>>>>>> b1a731bd9cd781438cfa2e3518ec3bb459473168
             )
 
             for i, place_data in enumerate(places_data):
