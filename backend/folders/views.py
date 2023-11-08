@@ -11,9 +11,9 @@ from django.views import View
 import json
 
 
-@method_decorator(csrf_exempt, name= 'dispatch') 
+@method_decorator(csrf_exempt, name='dispatch')
 class FoldersView(View):
-    def post(self , request): #폴더 생성 및 장소저장
+    def post(self, request):    # 폴더 생성 및 장소저장
         user_id = request.session.get('user_id')
         print(user_id)
         if user_id:
@@ -22,12 +22,30 @@ class FoldersView(View):
             user_id = data.get('user')
             places_data = data.get('places', [])
 
-            if not title or not user_id :
-                return JsonResponse({'message' : "로그인 및 제목을 입력해주세요."},status=400)
+            if not title or not user_id:
+                return JsonResponse({'message': "로그인 및 제목을 입력해주세요."}, status=400)
 
-            folder = Folder.objects.create(
-                title=title,
-                user_id=user_id  # user_id로 나중에 대체.
+        folder = Folder.objects.create(
+            title=title,
+            user_id=user_id
+        )
+
+        for i, place_data in enumerate(places_data):
+            latitude = place_data.get('latitude')
+            longitude = place_data.get('longitude')
+            name = place_data.get('name', '') 
+            address = place_data.get('address', '') 
+            phone = place_data.get('phone', '')
+
+            if latitude is None or longitude is None:
+                return JsonResponse({'message': f'Missing "latitude" or "longitude" in place {i}'}, status=400)
+
+            place = Places.objects.create(
+                name=name,  # 제공되지 않을 경우 빈 칸으로 입력됨.
+                address=address,  # 제공되지 않을 경우 빈 칸으로 입력됨.
+                phone=phone,  # 제공되지 않을 경우 빈 칸으로 입력됨.
+                latitude=float(latitude),
+                longitude=float(longitude)
             )
 
             for i, place_data in enumerate(places_data):
@@ -52,13 +70,14 @@ class FoldersView(View):
 
             return JsonResponse({'message': '폴더에 장소를 성공적으로 저장하였습니다.'}, status=201)
         else:
-              return JsonResponse({'message': 'xxxxxx'}, status=400)
-    
+            return JsonResponse({'message': 'xxxxxx'}, status=400)
+
+
 @method_decorator(csrf_exempt, name='dispatch')
 class FolderUpdateView(View):
     def post(self, request, folder_id):
         user_id = request.session.get('user_id')
-         # 폴더 객체 가져오기. 없으면 404 에러 반환.
+        # 폴더 객체 가져오기. 없으면 404 에러 반환.
         folder = get_object_or_404(Folder, pk=folder_id)
         if user_id:
             data = json.loads(request.body)
@@ -73,13 +92,13 @@ class FolderUpdateView(View):
                     address=place_data.get('address', ''),
                     phone=place_data.get('phone', ''),
                     latitude=float(place_data['latitude']),
-                    longtitude=float(place_data['longtitude'])
+                    longitude=float(place_data['longitude'])
                 )
                 folder.locations.add(place)
 
             return JsonResponse({'message': '폴더가 성공적으로 업데이트되었습니다.'}, status=200)
         else:
-             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
+            return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
     def put(self, request, folder_id):  # 폴더 title 수정
         user_id = request.session.get('user_id')
@@ -92,11 +111,10 @@ class FolderUpdateView(View):
             folder.save()
 
             return JsonResponse({'message': '폴더가 성공적으로 수정되었습니다.'}, status=200)
-
         else:
             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
-    def delete(self, request,folder_id):
+    def delete(self, request, folder_id):
         user_id = request.session.get('user_id') 
         folder = get_object_or_404(Folder, pk=folder_id)
         if user_id:
@@ -119,11 +137,3 @@ class FolderUpdateView(View):
             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
 
-# class FolderListview(View):
-#     def get(self,request):
-#         folders = request.user.folder_set.all()
-#         folder_list = [folder.title for folder in folders]
-#         return JsonResponse( folder_list, safe=False,status=200)
-        
-
-        
