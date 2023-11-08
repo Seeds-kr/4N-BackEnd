@@ -119,3 +119,15 @@ class FolderUpdateView(View):
             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
 
+@method_decorator(csrf_exempt, name='dispatch')
+class FolderListView(View):     # 폴더 목록 조회
+    def get(self, request):
+        user_id = request.session.get('user_id')    # 세션에서 user_id 가져와서 로그인 여부 확인
+        if user_id:
+            user = User.objects.get(id=user_id)
+            folders = user.folder_set.all()     # Django ORM 역참조 / 사용자 소유의 모든 폴더 가져옴
+            folder_list = [{'id': folder.id, 'title': folder.title} for folder in folders]
+            return JsonResponse(folder_list, safe=False, status=200)
+        else:
+            return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
+
