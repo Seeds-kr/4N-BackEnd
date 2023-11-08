@@ -47,26 +47,8 @@ class FoldersView(View):
                 latitude=float(latitude),
                 longitude=float(longitude)
             )
-
-            for i, place_data in enumerate(places_data):
-                latitude = place_data.get('latitude')
-                longtitude = place_data.get('longtitude')
-                name = place_data.get('name', '') 
-                address = place_data.get('address', '') 
-                phone = place_data.get('phone', '')
-
-                if latitude is None or longtitude is None:
-                    return JsonResponse({'message': f'Missing "latitude" or "longtitude" in place {i}'}, status=400)
-
-                place = Places.objects.create(
-                    name=name,  # 제공되지 않을 경우 빈 칸으로 입력됨.
-                    address=address,  # 제공되지 않을 경우 빈 칸으로 입력됨.
-                    phone=phone,  # 제공되지 않을 경우 빈 칸으로 입력됨.
-                    latitude=float(latitude),
-                    longtitude=float(longtitude)
-                )
-                print(folder.id)
-                folder.locations.add(place)
+            
+            folder.locations.add(place)
 
             return JsonResponse({'message': '폴더에 장소를 성공적으로 저장하였습니다.'}, status=201)
         else:
