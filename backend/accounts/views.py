@@ -64,7 +64,7 @@ def login(request):
         password = params.get('password')
 
         if not (useremail and password):
-            return JsonResponse({"message": "유저이름과 비밀번호를 입력해주세요."}, status=200)
+            return JsonResponse({"message": "유저 이메일과 비밀번호를 입력해주세요."}, status=200)   # 이름 -> 이메일 바꿨어용 -서하-
         else:
             try:
                 # 기존 DB에 있는 유저 모델 가져옴
