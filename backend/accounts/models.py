@@ -5,7 +5,7 @@ from django.db import models
 class User(models.Model):
     username = models.CharField(max_length=64)
     useremail = models.EmailField(max_length=64)
-    password = models.CharField(max_length=128) # 해싱 때문에 128글자로 늘렸습니다. -서하-
+    password = models.CharField(max_length=128)     # 해싱 때문에 128글자로 늘렸습니다. -서하-
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
