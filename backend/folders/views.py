@@ -13,7 +13,7 @@ import json
 
 @method_decorator(csrf_exempt, name='dispatch')
 class FoldersView(View):
-    def post(self, request):    # 폴더 생성 및 장소저장
+    def post(self, request):    # 폴더 생성 및 장소 저장
         user_id = request.session.get('user_id')
         print(user_id)
         if user_id:
@@ -53,6 +53,18 @@ class FoldersView(View):
             return JsonResponse({'message': '폴더에 장소를 성공적으로 저장하였습니다.'}, status=201)
         else:
             return JsonResponse({'message': 'xxxxxx'}, status=400)
+
+    def get(self, request, folder_id):
+        user_id = request.session.get('user_id')  # 세션에서 user_id 가져와서 로그인 여부 확인
+        if user_id:
+            folder = get_object_or_404(Folder, pk=folder_id)
+            places = folder.locations.all()  # 해당 폴더에 저장된 모든 장소를 가져옴
+            places_list = [{'id': place.id, 'name': place.name, 'address': place.address, 'phone': place.phone,
+                            'latitude': place.latitude, 'longitude': place.longitude} for place in places]  # 장소 목록을 리스트로 만듦
+            return JsonResponse({'folder': {'id': folder.id, 'title': folder.title}, 'places': places_list},
+                                safe=False, status=200)
+        else:
+            return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -130,4 +142,3 @@ class FolderListView(View):     # 폴더 목록 조회
             return JsonResponse(folder_list, safe=False, status=200)
         else:
             return JsonResponse({'message': '로그인이 필요합니다.'}, status=400)
-

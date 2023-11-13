@@ -1,6 +1,5 @@
 from django.db import models
 
-# Create your models here.
 
 class User(models.Model):
     username = models.CharField(max_length=64)
@@ -16,6 +15,3 @@ class User(models.Model):
         db_table = 'accounts_user'
         verbose_name = '사용자'
         verbose_name_plural = '사용자'
-    
-
-

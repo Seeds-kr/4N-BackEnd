@@ -15,12 +15,6 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
-
-
-
-# Create your views here.
-
-
 @method_decorator(csrf_exempt, name='dispatch')
 def register(request):
     if request.method == 'POST':
@@ -99,7 +93,7 @@ def findpassword(request):
         return JsonResponse({"message": "비밀번호를 찾았습니다.", "password": password}, status=200)
 
 
-@method_decorator(csrf_exempt, name= 'dispatch')
+@method_decorator(csrf_exempt, name='dispatch')
 def changepassword(request):
     if request.method == "POST":
         params = json.loads(request.body)
@@ -246,7 +240,7 @@ KAKAO_UNLINK_API = "https://kapi.kakao.com/v1/user/unlink"
 
 
 class KakaoUnLinkView(APIView):
-     def post(self, request):
+    def post(self, request):
         access_token = request.session.get('kakao_access_token')
         if access_token:
             user_kakao_id = request.session.get('kakao_user')
@@ -302,7 +296,7 @@ class NaverLoginView(APIView):
                     user = Naver_users.first()
                     Naver_name = me_info['response']['name']
                     request.session['Naver_user'] = user.id
-                    return Response({"message" : "가입된 회원입니다."}, status=200)
+                    return Response({"message": "가입된 회원입니다."}, status=200)
                 else:
                     # 간편 회원가입
                     user = User.objects.create(
@@ -331,10 +325,10 @@ class NaverLogoutView(APIView):
         
         # 네이버 API를 호출하여 해당 액세스 토큰으로 로그아웃 처리를 수행
         data = {
-        'grant_type': 'delete',
-        'client_id': settings.NAVER_CLIENT_ID,
-        'client_secret': settings.NAVER_CLIENT_SECRET,
-        'access_token': access_token,
+            'grant_type': 'delete',
+            'client_id': settings.NAVER_CLIENT_ID,
+            'client_secret': settings.NAVER_CLIENT_SECRET,
+            'access_token': access_token,
         }
 
         try:

@@ -19,21 +19,21 @@
 #         phone = data.get('phone')
 
 #         latitude_str = data.get('latitude')
-#         longtitude_str = data.get('longtitude')
+#         longitude_str = data.get('longitude')
 
-#         if latitude_str is None or longtitude_str is None:
+#         if latitude_str is None or longitude_str is None:
 #             return JsonResponse({'message': '위치 정보가 제공되지 않았습니다.'}, status=400)
 
 #         try:
 #             latitude = float(latitude_str)
-#             longtitude = float(longtitude_str)
+#             longitude = float(longitude_str)
 #         except ValueError:
 #             return JsonResponse({'message': '잘못된 위치 정보입니다.'}, status=400)
 
         
-#         location = Places(name=name, address=address, phone=phone, latitude=latitude, longtitude=longtitude)
+#         location = Places(name=name, address=address, phone=phone, latitude=latitude, longitude=longitude)
 #         location.save()
-#         print(location.id) #저장 눌렀을때 장소 id확인
+#         print(location.id) #저장 눌렀을 때 장소 id 확인
 #         return JsonResponse({'message': '성공적으로 저장되었습니다.'})
 
 #     return JsonResponse({'message': '허용되지 않는 메소드입니다.'}, status=400)
