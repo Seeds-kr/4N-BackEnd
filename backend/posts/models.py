@@ -6,6 +6,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,null=False)
     title = models.CharField(max_length=200,null=False)
     content = models.TextField(null=False)
+    locationid = models.TextField(null=False, default="")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
