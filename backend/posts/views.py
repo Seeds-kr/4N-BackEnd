@@ -37,7 +37,8 @@ class PostListView(View):
             post = Post()
             post.title = request.POST['title']
             post.content = request.POST['content']
-            post.locationid = request.POST['locationid']
+            post.longitude = request.POST['longitude']
+            post.latitude = request.POST['latitude']
             post.author = User.objects.get(id=user_id)
             post.save()
 
